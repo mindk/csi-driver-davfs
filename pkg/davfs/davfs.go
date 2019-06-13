@@ -14,14 +14,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package nfs
+package davfs
 
 import (
 	"github.com/container-storage-interface/spec/lib/go/csi"
 	"github.com/golang/glog"
 )
 
-type nfsDriver struct {
+type davfsDriver struct {
 	name    string
 	nodeID  string
 	version string
@@ -35,17 +35,17 @@ type nfsDriver struct {
 }
 
 const (
-	driverName = "csi-nfsplugin"
+	driverName = "csi-davfsplugin"
 )
 
 var (
 	version = "1.0.0-rc2"
 )
 
-func NewNFSdriver(nodeID, endpoint string) *nfsDriver {
+func Newdavfsdriver(nodeID, endpoint string) *davfsDriver {
 	glog.Infof("Driver: %v version: %v", driverName, version)
 
-	n := &nfsDriver{
+	n := &davfsDriver{
 		name:     driverName,
 		version:  version,
 		nodeID:   nodeID,
@@ -53,7 +53,7 @@ func NewNFSdriver(nodeID, endpoint string) *nfsDriver {
 	}
 
 	n.AddVolumeCapabilityAccessModes([]csi.VolumeCapability_AccessMode_Mode{csi.VolumeCapability_AccessMode_MULTI_NODE_MULTI_WRITER})
-	// NFS plugin does not support ControllerServiceCapability now.
+	// davfs plugin does not support ControllerServiceCapability now.
 	// If support is added, it should set to appropriate
 	// ControllerServiceCapability RPC types.
 	n.AddControllerServiceCapabilities([]csi.ControllerServiceCapability_RPC_Type{csi.ControllerServiceCapability_RPC_UNKNOWN})
@@ -61,24 +61,24 @@ func NewNFSdriver(nodeID, endpoint string) *nfsDriver {
 	return n
 }
 
-func NewNodeServer(n *nfsDriver) *nodeServer {
+func NewNodeServer(n *davfsDriver) *nodeServer {
 	return &nodeServer{
 		Driver: n,
 	}
 }
 
-func (n *nfsDriver) Run() {
+func (n *davfsDriver) Run() {
 	s := NewNonBlockingGRPCServer()
 	s.Start(n.endpoint,
 		NewDefaultIdentityServer(n),
-		// NFS plugin has not implemented ControllerServer
+		// davfs plugin has not implemented ControllerServer
 		// using default controllerserver.
 		NewControllerServer(n),
 		NewNodeServer(n))
 	s.Wait()
 }
 
-func (n *nfsDriver) AddVolumeCapabilityAccessModes(vc []csi.VolumeCapability_AccessMode_Mode) []*csi.VolumeCapability_AccessMode {
+func (n *davfsDriver) AddVolumeCapabilityAccessModes(vc []csi.VolumeCapability_AccessMode_Mode) []*csi.VolumeCapability_AccessMode {
 	var vca []*csi.VolumeCapability_AccessMode
 	for _, c := range vc {
 		glog.Infof("Enabling volume access mode: %v", c.String())
@@ -88,7 +88,7 @@ func (n *nfsDriver) AddVolumeCapabilityAccessModes(vc []csi.VolumeCapability_Acc
 	return vca
 }
 
-func (n *nfsDriver) AddControllerServiceCapabilities(cl []csi.ControllerServiceCapability_RPC_Type) {
+func (n *davfsDriver) AddControllerServiceCapabilities(cl []csi.ControllerServiceCapability_RPC_Type) {
 	var csc []*csi.ControllerServiceCapability
 
 	for _, c := range cl {

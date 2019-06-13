@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-CMDS=nfsplugin
-all: build
+CMDS=davfsplugin
+all: version build-% build container-% container push-% push clean test
 
 include release-tools/build.make

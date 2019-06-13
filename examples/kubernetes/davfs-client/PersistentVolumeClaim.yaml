@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: data-davfsplugin
+  namespace: example
+spec:
+  storageClassName: manual
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+  selector:
+    matchExpressions:
+    - key: name
+      operator: In
+      values: ["data-davfsplugin"]

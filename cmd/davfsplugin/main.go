@@ -21,9 +21,8 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/calponia/csi-driver-davfs/pkg/davfs"
 	"github.com/spf13/cobra"
-
-	"github.com/kubernetes-csi/csi-driver-nfs/pkg/nfs"
 )
 
 var (
@@ -40,8 +39,8 @@ func main() {
 	flag.CommandLine.Parse([]string{})
 
 	cmd := &cobra.Command{
-		Use:   "NFS",
-		Short: "CSI based NFS driver",
+		Use:   "davfs",
+		Short: "CSI based davfs driver",
 		Run: func(cmd *cobra.Command, args []string) {
 			handle()
 		},
@@ -62,9 +61,10 @@ func main() {
 	}
 
 	os.Exit(0)
+	fmt.Printf("test")
 }
 
 func handle() {
-	d := nfs.NewNFSdriver(nodeID, endpoint)
+	d := davfs.Newdavfsdriver(nodeID, endpoint)
 	d.Run()
 }

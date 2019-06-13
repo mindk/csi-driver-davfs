@@ -1,31 +1,31 @@
 # This YAML file contains driver-registrar & csi driver nodeplugin API objects
-# that are necessary to run CSI nodeplugin for nfs
+# that are necessary to run CSI nodeplugin for davfs
 kind: DaemonSet
 apiVersion: apps/v1beta2
 metadata:
-  name: csi-nodeplugin-nfsplugin
+  name: csi-nodeplugin-davfsplugin
 spec:
   selector:
     matchLabels:
-      app: csi-nodeplugin-nfsplugin
+      app: csi-nodeplugin-davfsplugin
   template:
     metadata:
       labels:
-        app: csi-nodeplugin-nfsplugin
+        app: csi-nodeplugin-davfsplugin
     spec:
       serviceAccount: csi-nodeplugin
-      hostNetwork: true
+      # hostNetwork: true
       containers:
         - name: node-driver-registrar
           image: quay.io/k8scsi/csi-node-driver-registrar:v1.0.2
           lifecycle:
             preStop:
               exec:
-                command: ["/bin/sh", "-c", "rm -rf /registration/csi-nfsplugin /registration/csi-nfsplugin-reg.sock"]
+                command: ["/bin/sh", "-c", "rm -rf /registration/csi-davfsplugin /registration/csi-davfsplugin-reg.sock"]
           args:
             - --v=5
             - --csi-address=/plugin/csi.sock
-            - --kubelet-registration-path=/var/lib/kubelet/plugins/csi-nfsplugin/csi.sock
+            - --kubelet-registration-path=/var/lib/kubelet/plugins/csi-davfsplugin/csi.sock
           env:
             - name: KUBE_NODE_NAME
               valueFrom:
@@ -36,13 +36,13 @@ spec:
               mountPath: /plugin
             - name: registration-dir
               mountPath: /registration
-        - name: nfs
+        - name: davfs
           securityContext:
             privileged: true
             capabilities:
               add: ["SYS_ADMIN"]
             allowPrivilegeEscalation: true
-          image: quay.io/k8scsi/nfsplugin:v1.0.0
+          image: registry.gitlab.com/calponia/csi-driver-davfs/davfsplugin:canary
           args :
             - "--nodeid=$(NODE_ID)"
             - "--endpoint=$(CSI_ENDPOINT)"
@@ -53,7 +53,7 @@ spec:
                   fieldPath: spec.nodeName
             - name: CSI_ENDPOINT
               value: unix://plugin/csi.sock
-          imagePullPolicy: "IfNotPresent"
+          imagePullPolicy: "Always"
           volumeMounts:
             - name: plugin-dir
               mountPath: /plugin
@@ -63,7 +63,7 @@ spec:
       volumes:
         - name: plugin-dir
           hostPath:
-            path: /var/lib/kubelet/plugins/csi-nfsplugin
+            path: /var/lib/kubelet/plugins/csi-davfsplugin
             type: DirectoryOrCreate
         - name: pods-mount-dir
           hostPath:

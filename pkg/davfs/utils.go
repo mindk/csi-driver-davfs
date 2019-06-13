@@ -1,22 +1,23 @@
-package nfs
+package davfs
 
 import (
 	"fmt"
+	"strings"
+
 	"github.com/container-storage-interface/spec/lib/go/csi"
 	"github.com/golang/glog"
 	"github.com/kubernetes-csi/csi-lib-utils/protosanitizer"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
-	"strings"
 )
 
-func NewDefaultIdentityServer(d *nfsDriver) *IdentityServer {
+func NewDefaultIdentityServer(d *davfsDriver) *IdentityServer {
 	return &IdentityServer{
 		Driver: d,
 	}
 }
 
-func NewControllerServer(d *nfsDriver) *ControllerServer {
+func NewControllerServer(d *davfsDriver) *ControllerServer {
 	return &ControllerServer{
 		Driver: d,
 	}

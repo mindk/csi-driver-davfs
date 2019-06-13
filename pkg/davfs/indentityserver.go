@@ -1,4 +1,4 @@
-package nfs
+package davfs
 
 import (
 	"github.com/container-storage-interface/spec/lib/go/csi"
@@ -9,7 +9,7 @@ import (
 )
 
 type IdentityServer struct {
-	Driver *nfsDriver
+	Driver *davfsDriver
 }
 
 func (ids *IdentityServer) GetPluginInfo(ctx context.Context, req *csi.GetPluginInfoRequest) (*csi.GetPluginInfoResponse, error) {
