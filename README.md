@@ -1,5 +1,13 @@
 # CSI NFS driver
 
+## Deployment
+```
+VERSION=1.0.1
+git tag v1.0.1
+sed -i 's/.*version =.*/	version = "1.0.1"/' pkg/davfs/davfs.go
+make all
+```
+
 ## Kubernetes
 
 ### Requirements

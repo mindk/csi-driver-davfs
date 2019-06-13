@@ -22,7 +22,6 @@
 # including build.make.
 REGISTRY_NAME=thingylabs
 
-VERSION=$(shell cat version)
 # Revision that gets built into each binary via the main.version
 # string. Uses the `git describe` output based on the most recent
 # version tag with a short revision suffix or, if nothing has been
@@ -59,9 +58,6 @@ TESTARGS = -v -args -alsologtostderr -v 5
 else
 TESTARGS =
 endif
-
-version:
-	@ echo $(VERSION)
 
 # Specific packages can be excluded from each of the tests below by setting the *_FILTER_CMD variables
 # to something like "| grep -v 'github.com/kubernetes-csi/project/pkg/foobar'". See usage below.
