@@ -1,15 +1,17 @@
+---
 # This YAML file contains attacher & csi driver API objects that are necessary
-# to run external CSI attacher for nfs
+# to run external CSI attacher for davfs
 
 kind: Service
 apiVersion: v1
 metadata:
-  name: csi-attacher-nfsplugin
+  name: csi-attacher-davfsplugin
+  namespace: csi-davfs-system
   labels:
-    app: csi-attacher-nfsplugin
+    app: csi-attacher-davfsplugin
 spec:
   selector:
-    app: csi-attacher-nfsplugin
+    app: csi-attacher-davfsplugin
   ports:
     - name: dummy
       port: 12345
@@ -18,14 +20,15 @@ spec:
 kind: StatefulSet
 apiVersion: apps/v1beta1
 metadata:
-  name: csi-attacher-nfsplugin
+  name: csi-attacher-davfsplugin
+  namespace: csi-davfs-system
 spec:
   serviceName: "csi-attacher"
   replicas: 1
   template:
     metadata:
       labels:
-        app: csi-attacher-nfsplugin
+        app: csi-attacher-davfsplugin
     spec:
       serviceAccount: csi-attacher
       containers:
@@ -42,8 +45,8 @@ spec:
             - name: socket-dir
               mountPath: /csi
 
-        - name: nfs
-          image: quay.io/k8scsi/nfsplugin:v1.0.0
+        - name: davfs
+          image: thingylabs/csi-driver-davfs:v0.0.2
           args :
             - "--nodeid=$(NODE_ID)"
             - "--endpoint=$(CSI_ENDPOINT)"
@@ -54,7 +57,7 @@ spec:
                   fieldPath: spec.nodeName
             - name: CSI_ENDPOINT
               value: unix://plugin/csi.sock
-          imagePullPolicy: "IfNotPresent"
+          imagePullPolicy: "Always"
           volumeMounts:
             - name: socket-dir
               mountPath: /plugin

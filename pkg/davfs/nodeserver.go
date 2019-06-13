@@ -14,13 +14,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package nfs
+package davfs
 
 import (
+	"bytes"
 	"fmt"
-	"github.com/golang/glog"
 	"os"
+	"os/exec"
 	"strings"
+
+	"github.com/golang/glog"
 
 	"github.com/container-storage-interface/spec/lib/go/csi"
 	"golang.org/x/net/context"
@@ -30,7 +33,7 @@ import (
 )
 
 type nodeServer struct {
-	Driver *nfsDriver
+	Driver *davfsDriver
 }
 
 func (ns *nodeServer) NodePublishVolume(ctx context.Context, req *csi.NodePublishVolumeRequest) (*csi.NodePublishVolumeResponse, error) {
@@ -58,18 +61,28 @@ func (ns *nodeServer) NodePublishVolume(ctx context.Context, req *csi.NodePublis
 
 	s := req.GetVolumeContext()["server"]
 	ep := req.GetVolumeContext()["share"]
-	source := fmt.Sprintf("%s:%s", s, ep)
+	user := req.GetVolumeContext()["user"]
+	password := req.GetVolumeContext()["password"]
+	source := fmt.Sprintf("%s%s", s, ep)
 
 	mounter := mount.New("")
-	err = mounter.Mount(source, targetPath, "nfs", mo)
+	err = mounter.Mount(source, targetPath, "davfs", mo)
+
+	cmd1 := exec.Command("mount.davfs", source, targetPath)
+	cmd1.Stdin = strings.NewReader(fmt.Sprintf("%s\n%s\n", user, password))
+	var outb, errb bytes.Buffer
+	cmd1.Stdout = &outb
+	cmd1.Stderr = &errb
+	err = cmd1.Run()
 	if err != nil {
 		if os.IsPermission(err) {
-			return nil, status.Error(codes.PermissionDenied, err.Error())
+			return nil, status.Error(codes.PermissionDenied, errb.String())
 		}
 		if strings.Contains(err.Error(), "invalid argument") {
-			return nil, status.Error(codes.InvalidArgument, err.Error())
+			return nil, status.Error(codes.InvalidArgument, errb.String())
 		}
-		return nil, status.Error(codes.Internal, err.Error())
+		// return nil, status.Error(codes.Internal, err.Error())
+		return nil, status.Error(codes.Internal, errb.String())
 	}
 
 	return &csi.NodePublishVolumeResponse{}, nil

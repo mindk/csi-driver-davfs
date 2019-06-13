@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: data-davfsplugin
+  labels:
+    name: data-davfsplugin
+spec:
+  storageClassName: manual
+  accessModes:
+  - ReadWriteMany
+  capacity:
+    storage: 1Gi
+  csi:
+    driver: csi-davfsplugin
+    volumeHandle: data-id
+    volumeAttributes:
+      server: davfs-server.example.svc.cluster.local
+      share: /
+      user: admin
+      password: admin

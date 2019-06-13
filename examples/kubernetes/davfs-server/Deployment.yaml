@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: davfs-server
+  labels:
+    app: davfs-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: davfs-server
+  template:
+    metadata:
+      labels:
+        app: davfs-server
+    spec:
+      containers:
+      - name: davfs-server
+        image: bytemark/webdav
+        ports:
+        - containerPort: 80
+        env:
+        - name: AUTH_TYPE
+          value: "Digest"
+        - name: USERNAME
+          value: "admin"
+        - name: PASSWORD
+          value: "admin"

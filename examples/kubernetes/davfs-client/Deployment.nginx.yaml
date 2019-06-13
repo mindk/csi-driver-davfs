@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+  namespace: example
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: davfs-client
+  template:
+    metadata:
+      labels:
+        app: davfs-client
+    spec:
+      containers:
+      - image: maersk/nginx
+        imagePullPolicy: IfNotPresent
+        name: nginx
+        ports:
+        - containerPort: 80
+          protocol: TCP
+        volumeMounts:
+          - mountPath: /var/www
+            name: data-davfsplugin
+      volumes:
+      - name: data-davfsplugin
+        persistentVolumeClaim:
+          claimName: data-davfsplugin

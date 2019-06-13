@@ -1,0 +1,13 @@
+#!/bin/bash
+echo "--- build ----------------------------------------------------------------------------"
+make build
+echo "--- push ----------------------------------------------------------------------------"
+make push
+echo "--- deploy delete ----------------------------------------------------------------------------"
+kubectl -k deploy/kubernetes delete
+echo "--- deploy create ----------------------------------------------------------------------------"
+kubectl -k deploy/kubernetes create
+echo "--- deploy clienti delete ----------------------------------------------------------------------------"
+kubectl -k examples/kubernetes/davfs-client delete
+echo "--- deploy clienti create ----------------------------------------------------------------------------"
+kubectl -k examples/kubernetes/davfs-client create

@@ -1,6 +1,27 @@
 # CSI NFS driver
 
+## Workflows
+* first login to docker hub (you need to be part of the thingylabs organisation)
+
+### Publish automatically
+```sh
+publish.sh 1.0.3
+```
+
+### Deploy example to cluster
+```sh
+# create resources
+deploy.sh c
+
+# delete resources
+deploy.sh d
+
+# delete first, then create resources again
+deploy.sh b
+```
+
 ## Kubernetes
+
 ### Requirements
 
 The folllowing feature gates and runtime config have to be enabled to deploy the driver
@@ -14,7 +35,9 @@ Mountprogpation requries support for privileged containers. So, make sure privil
 
 ### Example local-up-cluster.sh
 
-```ALLOW_PRIVILEGED=true FEATURE_GATES=CSIPersistentVolume=true,MountPropagation=true RUNTIME_CONFIG="storage.k8s.io/v1alpha1=true" LOG_LEVEL=5 hack/local-up-cluster.sh```
+```
+ALLOW_PRIVILEGED=true FEATURE_GATES=CSIPersistentVolume=true,MountPropagation=true RUNTIME_CONFIG="storage.k8s.io/v1alpha1=true" LOG_LEVEL=5 hack/local-up-cluster.sh
+```
 
 ### Deploy
 

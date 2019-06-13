@@ -1,9 +1,10 @@
+---
 # This YAML defines all API objects to create RBAC roles for CSI node plugin
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: csi-nodeplugin
-
+  namespace: csi-davfs-system
 ---
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
@@ -27,7 +28,7 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: csi-nodeplugin
-    namespace: default
+    namespace: csi-davfs-system
 roleRef:
   kind: ClusterRole
   name: csi-nodeplugin

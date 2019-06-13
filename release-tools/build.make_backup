@@ -20,8 +20,9 @@
 
 # This is the default. It can be overridden in the main Makefile after
 # including build.make.
-REGISTRY_NAME=thingylabs
+REGISTRY_NAME=thingylabs/csi-driver-davfs
 
+VERSION=$(shell cat version)
 # Revision that gets built into each binary via the main.version
 # string. Uses the `git describe` output based on the most recent
 # version tag with a short revision suffix or, if nothing has been
@@ -48,9 +49,8 @@ IMAGE_TAGS+=$(shell git branch -r --points-at=HEAD | grep 'origin/release-' | gr
 IMAGE_TAGS+=$(shell tagged="$$(git describe --tags --match='v*' --abbrev=0)"; if [ "$$tagged" ] && [ "$$(git rev-list -n1 HEAD)" = "$$(git rev-list -n1 $$tagged)" ]; then echo $$tagged; fi)
 
 # Images are named after the command contained in them.
-# IMAGE_NAME=$(REGISTRY_NAME)/$*
+IMAGE_NAME=$(REGISTRY_NAME)/$*
 # IMAGE_NAME=calponia/$*
-IMAGE_NAME=$(REGISTRY_NAME)/csi-driver-davfs
 
 ifdef V
 # Adding "-alsologtostderr" assumes that all test binaries contain glog. This is not guaranteed.
@@ -58,6 +58,9 @@ TESTARGS = -v -args -alsologtostderr -v 5
 else
 TESTARGS =
 endif
+
+version:
+	echo $(VERSION)
 
 # Specific packages can be excluded from each of the tests below by setting the *_FILTER_CMD variables
 # to something like "| grep -v 'github.com/kubernetes-csi/project/pkg/foobar'". See usage below.
@@ -75,6 +78,7 @@ push-%: container-%
 		docker tag $*:latest $(IMAGE_NAME):$$tag; \
 		docker push $(IMAGE_NAME):$$tag; \
 	}; \
+
 	for tag in $(IMAGE_TAGS); do \
 		if [ "$$tag" = "canary" ] || echo "$$tag" | grep -q -e '-canary$$'; then \
 			: "creating or overwriting canary image"; \

@@ -1,4 +1,4 @@
-package nfs
+package davfs
 
 import (
 	"net"

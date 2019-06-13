@@ -1,4 +1,4 @@
-package nfs
+package davfs
 
 import (
 	"github.com/container-storage-interface/spec/lib/go/csi"
@@ -9,7 +9,7 @@ import (
 )
 
 type ControllerServer struct {
-	Driver *nfsDriver
+	Driver *davfsDriver
 }
 
 func (cs *ControllerServer) CreateVolume(ctx context.Context, req *csi.CreateVolumeRequest) (*csi.CreateVolumeResponse, error) {
