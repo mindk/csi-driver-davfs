@@ -5,7 +5,7 @@ VERSION="${1}"
   exit 1
 
 # update deployment image versions
-sed -i 's/thingylabs\/csi-driver-davfs:v.*/thingylabs\/csi-driver-davfs:v'"${VERSION}"'/' deploy/kubernetes/csi-davfs-attacher.yaml
+sed -i 's/thingylabs\/csi-driver-davfs:v.*/thingylabs\/csi-driver-davfs:v'"${VERSION}"'/' deploy/kubernetes/csi-attacher-davfsplugin.yaml
 sed -i 's/thingylabs\/csi-driver-davfs:v.*/thingylabs\/csi-driver-davfs:v'"${VERSION}"'/' deploy/kubernetes/csi-nodeplugin-davfsplugin.yaml
 
 # update binary version

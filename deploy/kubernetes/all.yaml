@@ -6,6 +6,7 @@ kind: Service
 apiVersion: v1
 metadata:
   name: csi-attacher-davfsplugin
+  namespace: csi-davfs-system
   labels:
     app: csi-attacher-davfsplugin
 spec:
@@ -20,6 +21,7 @@ kind: StatefulSet
 apiVersion: apps/v1beta1
 metadata:
   name: csi-attacher-davfsplugin
+  namespace: csi-davfs-system
 spec:
   serviceName: "csi-attacher"
   replicas: 1
@@ -65,12 +67,11 @@ spec:
 ---
 # This YAML file contains RBAC API objects that are necessary to run external
 # CSI attacher for nfs flex adapter
-
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: csi-attacher
-
+  namespace: csi-davfs-system
 ---
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
@@ -86,7 +87,6 @@ rules:
   - apiGroups: ["storage.k8s.io"]
     resources: ["volumeattachments"]
     verbs: ["get", "list", "watch", "update"]
-
 ---
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
@@ -95,11 +95,15 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: csi-attacher
-    namespace: default
+    namespace: csi-davfs-system
 roleRef:
   kind: ClusterRole
   name: external-attacher-runner
   apiGroup: rbac.authorization.k8s.io
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: csi-davfs-system
 ---
 # This YAML file contains driver-registrar & csi driver nodeplugin API objects
 # that are necessary to run CSI nodeplugin for davfs
@@ -107,6 +111,7 @@ kind: DaemonSet
 apiVersion: apps/v1beta2
 metadata:
   name: csi-nodeplugin-davfsplugin
+  namespace: csi-davfs-system
 spec:
   selector:
     matchLabels:
@@ -182,7 +187,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: csi-nodeplugin
-
+  namespace: csi-davfs-system
 ---
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
@@ -206,7 +211,7 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: csi-nodeplugin
-    namespace: default
+    namespace: csi-davfs-system
 roleRef:
   kind: ClusterRole
   name: csi-nodeplugin
