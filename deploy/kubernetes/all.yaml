@@ -46,7 +46,7 @@ spec:
               mountPath: /csi
 
         - name: davfs
-          image: thingylabs/csi-driver-davfs:v1.0.3
+          image: thingylabs/csi-driver-davfs:v1.0.4
           args :
             - "--nodeid=$(NODE_ID)"
             - "--endpoint=$(CSI_ENDPOINT)"
@@ -100,6 +100,7 @@ roleRef:
   kind: ClusterRole
   name: external-attacher-runner
   apiGroup: rbac.authorization.k8s.io
+---
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -150,7 +151,7 @@ spec:
             capabilities:
               add: ["SYS_ADMIN"]
             allowPrivilegeEscalation: true
-          image: thingylabs/csi-driver-davfs:v1.0.3
+          image: thingylabs/csi-driver-davfs:v1.0.4
           args :
             - "--nodeid=$(NODE_ID)"
             - "--endpoint=$(CSI_ENDPOINT)"
