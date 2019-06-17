@@ -15,6 +15,11 @@ sed -i 's/.*version =.*/	version = "'"${VERSION}"'"/' pkg/davfs/davfs.go
 rm deploy/kubernetes/all.yaml
 cat deploy/kubernetes/*.yaml >> deploy/kubernetes/all.yaml
 
+# git version bump
+git add -A
+git commit -m "build: ${VERSION}"
+git push origin master
+
 # git tag
 git push --delete origin "v${VERSION}" || true
 git tag -d "v${VERSION}" || true

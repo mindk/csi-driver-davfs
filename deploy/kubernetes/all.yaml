@@ -46,7 +46,7 @@ spec:
               mountPath: /csi
 
         - name: davfs
-          image: thingylabs/csi-driver-davfs:v1.0.1
+          image: thingylabs/csi-driver-davfs:v1.0.2
           args :
             - "--nodeid=$(NODE_ID)"
             - "--endpoint=$(CSI_ENDPOINT)"
@@ -150,7 +150,7 @@ spec:
             capabilities:
               add: ["SYS_ADMIN"]
             allowPrivilegeEscalation: true
-          image: thingylabs/csi-driver-davfs:v1.0.1
+          image: thingylabs/csi-driver-davfs:v1.0.2
           args :
             - "--nodeid=$(NODE_ID)"
             - "--endpoint=$(CSI_ENDPOINT)"
