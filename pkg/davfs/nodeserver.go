@@ -65,9 +65,6 @@ func (ns *nodeServer) NodePublishVolume(ctx context.Context, req *csi.NodePublis
 	password := req.GetVolumeContext()["password"]
 	source := fmt.Sprintf("%s%s", s, ep)
 
-	mounter := mount.New("")
-	err = mounter.Mount(source, targetPath, "davfs", mo)
-
 	cmd1 := exec.Command("mount.davfs", source, targetPath)
 	cmd1.Stdin = strings.NewReader(fmt.Sprintf("%s\n%s\n", user, password))
 	var outb, errb bytes.Buffer
