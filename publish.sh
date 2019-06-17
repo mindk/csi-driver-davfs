@@ -24,6 +24,7 @@ git push origin master
 git push --delete origin "v${VERSION}" || true
 git tag -d "v${VERSION}" || true
 git tag "v${VERSION}"
+git push --tags
 
 # make (make, publish, test, ...)
 make all
