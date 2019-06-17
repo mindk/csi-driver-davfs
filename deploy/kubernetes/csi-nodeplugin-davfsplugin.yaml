@@ -44,7 +44,7 @@ spec:
             capabilities:
               add: ["SYS_ADMIN"]
             allowPrivilegeEscalation: true
-          image: thingylabs/csi-driver-davfs:v1.0.2
+          image: thingylabs/csi-driver-davfs:v1.0.3
           args :
             - "--nodeid=$(NODE_ID)"
             - "--endpoint=$(CSI_ENDPOINT)"
