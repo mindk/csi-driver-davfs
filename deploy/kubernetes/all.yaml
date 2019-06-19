@@ -46,7 +46,7 @@ spec:
               mountPath: /csi
 
         - name: davfs
-          image: thingylabs/csi-driver-davfs:v1.0.4
+          image: thingylabs/csi-driver-davfs:v1.0.5
           args :
             - "--nodeid=$(NODE_ID)"
             - "--endpoint=$(CSI_ENDPOINT)"
@@ -64,6 +64,16 @@ spec:
       volumes:
         - name: socket-dir
           emptyDir:
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      storageClassName: manual
+      accessModes:
+        - ReadWriteMany
+      resources:
+        requests:
+          storage: 1Gi
 ---
 # This YAML file contains RBAC API objects that are necessary to run external
 # CSI attacher for nfs flex adapter
@@ -151,7 +161,7 @@ spec:
             capabilities:
               add: ["SYS_ADMIN"]
             allowPrivilegeEscalation: true
-          image: thingylabs/csi-driver-davfs:v1.0.4
+          image: thingylabs/csi-driver-davfs:v1.0.5
           args :
             - "--nodeid=$(NODE_ID)"
             - "--endpoint=$(CSI_ENDPOINT)"
