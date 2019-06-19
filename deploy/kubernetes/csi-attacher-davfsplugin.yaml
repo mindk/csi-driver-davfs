@@ -64,3 +64,13 @@ spec:
       volumes:
         - name: socket-dir
           emptyDir:
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      storageClassName: manual
+      accessModes:
+        - ReadWriteMany
+      resources:
+        requests:
+          storage: 1Gi
