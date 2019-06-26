@@ -39,7 +39,7 @@ const (
 )
 
 var (
-	version = "1.0.5"
+	version = "1.1.0"
 )
 
 func Newdavfsdriver(nodeID, endpoint string) *davfsDriver {

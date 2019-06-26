@@ -5,3 +5,4 @@ resources:
 - PersistentVolume.yaml
 - PersistentVolumeClaim.yaml
 - Deployment.nginx.yaml
+- Secret.yaml

@@ -54,24 +54,37 @@ func (ns *nodeServer) NodePublishVolume(ctx context.Context, req *csi.NodePublis
 		return &csi.NodePublishVolumeResponse{}, nil
 	}
 
-	mo := req.GetVolumeCapability().GetMount().GetMountFlags()
+	flags := req.GetVolumeCapability().GetMount().GetMountFlags()
 	if req.GetReadonly() {
-		mo = append(mo, "ro")
+		flags = append(flags, "ro")
 	}
 
-	s := req.GetVolumeContext()["server"]
-	ep := req.GetVolumeContext()["share"]
-	user := req.GetVolumeContext()["user"]
-	password := req.GetVolumeContext()["password"]
-	source := fmt.Sprintf("%s%s", s, ep)
+	credentials := req.GetSecrets()
+	source := fmt.Sprintf("%s%s",
+		req.GetVolumeContext()["server"],
+		req.GetVolumeContext()["share"],
+	)
+	glog.V(5).Infof("Mounting endpoint '%s'", source)
 
-	cmd1 := exec.Command("mount.davfs", source, targetPath)
-	cmd1.Stdin = strings.NewReader(fmt.Sprintf("%s\n%s\n", user, password))
-	var outb, errb bytes.Buffer
-	cmd1.Stdout = &outb
-	cmd1.Stderr = &errb
-	err = cmd1.Run()
-	if err != nil {
+	var errb bytes.Buffer
+	cmd := exec.Command("mount.davfs", source, targetPath)
+	if len(credentials) > 0 {
+		username, ok := credentials["username"]
+		if !ok {
+			glog.V(5).Infof("Missing username")
+		}
+		password, ok := credentials["password"]
+		if !ok {
+			glog.V(5).Infof("Missing password")
+		}
+		cmd.Stdin = strings.NewReader(fmt.Sprintf("%s\n%s", username, password))
+	}
+	for _, o := range flags {
+		cmd.Args = append(cmd.Args, "-o", o)
+	}
+	cmd.Stderr = &errb
+
+	if err = cmd.Run(); err != nil {
 		if os.IsPermission(err) {
 			return nil, status.Error(codes.PermissionDenied, errb.String())
 		}

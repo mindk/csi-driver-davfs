@@ -16,5 +16,3 @@ spec:
     volumeAttributes:
       server: davfs-server.example.svc.cluster.local
       share: /
-      user: admin
-      password: admin
