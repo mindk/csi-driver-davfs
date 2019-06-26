@@ -46,7 +46,7 @@ spec:
               mountPath: /csi
 
         - name: davfs
-          image: thingylabs/csi-driver-davfs:v1.1.0
+          image: thingylabs/csi-driver-davfs:v1.1.1
           args :
             - "--nodeid=$(NODE_ID)"
             - "--endpoint=$(CSI_ENDPOINT)"

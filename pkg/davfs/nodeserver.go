@@ -69,13 +69,19 @@ func (ns *nodeServer) NodePublishVolume(ctx context.Context, req *csi.NodePublis
 	var errb bytes.Buffer
 	cmd := exec.Command("mount.davfs", source, targetPath)
 	if len(credentials) > 0 {
-		username, ok := credentials["username"]
-		if !ok {
-			glog.V(5).Infof("Missing username")
-		}
-		password, ok := credentials["password"]
-		if !ok {
-			glog.V(5).Infof("Missing password")
+		var username, password string
+		var ok bool
+		if username, ok = req.GetVolumeContext()["username"]; ok {
+			if password, ok = credentials[username]; !ok {
+				glog.V(5).Infof("No username match for password '%s'", username)
+			}
+		} else {
+			if username, ok = credentials["username"]; !ok {
+				glog.V(5).Infof("Missing username")
+			}
+			if password, ok = credentials["password"]; !ok {
+				glog.V(5).Infof("Missing password")
+			}
 		}
 		cmd.Stdin = strings.NewReader(fmt.Sprintf("%s\n%s", username, password))
 	}
