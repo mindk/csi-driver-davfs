@@ -18,13 +18,17 @@ spec:
 
 ---
 kind: StatefulSet
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 metadata:
   name: csi-attacher-davfsplugin
   namespace: csi-davfs-system
 spec:
+  podManagementPolicy: OrderedReady
   serviceName: "csi-attacher"
   replicas: 1
+  selector:
+    matchLabels:
+      app: csi-attacher-davfsplugin
   template:
     metadata:
       labels:

@@ -2,11 +2,12 @@
 # This YAML file contains driver-registrar & csi driver nodeplugin API objects
 # that are necessary to run CSI nodeplugin for davfs
 kind: DaemonSet
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 metadata:
   name: csi-nodeplugin-davfsplugin
   namespace: csi-davfs-system
 spec:
+  revisionHistoryLimit: 10
   selector:
     matchLabels:
       app: csi-nodeplugin-davfsplugin
