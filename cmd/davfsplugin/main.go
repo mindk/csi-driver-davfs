@@ -21,7 +21,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/calponia/csi-driver-davfs/pkg/davfs"
+	"github.com/mindk/csi-driver-davfs/pkg/davfs"
 	"github.com/spf13/cobra"
 )
 

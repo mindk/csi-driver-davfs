@@ -1,4 +1,4 @@
-module github.com/calponia/csi-driver-davfs
+module github.com/mindk/csi-driver-davfs
 
 go 1.12
 

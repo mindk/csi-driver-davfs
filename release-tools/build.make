@@ -20,7 +20,7 @@
 
 # This is the default. It can be overridden in the main Makefile after
 # including build.make.
-REGISTRY_NAME=thingylabs
+REGISTRY_NAME=mindk
 
 # Revision that gets built into each binary via the main.version
 # string. Uses the `git describe` output based on the most recent
@@ -49,7 +49,6 @@ IMAGE_TAGS+=$(shell tagged="$$(git describe --tags --match='v*' --abbrev=0)"; if
 
 # Images are named after the command contained in them.
 # IMAGE_NAME=$(REGISTRY_NAME)/$*
-# IMAGE_NAME=calponia/$*
 IMAGE_NAME=$(REGISTRY_NAME)/csi-driver-davfs
 
 ifdef V

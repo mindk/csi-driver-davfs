@@ -1,7 +1,7 @@
 # CSI WEBDAV driver
 
 ## Workflows
-* first login to docker hub (you need to be part of the thingylabs organisation)
+* first login to docker hub (you need to be part of the mindk organisation)
 
 ### Publish automatically
 ```sh
